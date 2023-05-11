@@ -13,50 +13,102 @@ const app = express();
 const cors = require("cors");
 
 // Importing a json file
-const data = require("./data/weather.json");
+//const data = require("./data/weather.json");
 
 // this settting says that everyone is allowed to speak to our server
 app.use(cors());
 
 // we are getting the port variable from the .env file.
 const PORT = process.env.PORT;
+const axios = require("axios");
 
 const error = {
   error: "Something went wrong.",
 };
 // this is a route. if you turn the server on and go to http://localhost:3001/ (or whatever port you specified in your .env), you will see 'hello from the home route'
 app.get("/", (request, response) => {
-  response.send(error);
-  response.status(500);
+  response.status(500).json(error);
 });
 
-app.get("/weather", (request, response) => {
+//base https://api.weatherbit.io/v2.0/forecast/daily
+//key
+//city
+//${request.query.searchQuery}
+app.get("/weather", async (request, response) => {
   if (request.query.lat && request.query.lon && request.query.searchQuery) {
-    let latSearch = request.query.lat.split(".")[0];
-    let lonSearch = request.query.lon.split(".")[0];
     let citySearch = request.query.searchQuery;
 
-    let dataCitySearch = data.find((city) => city.city_name.toLowerCase() === citySearch.toLowerCase());
+    try {
+      const API = `https://api.weatherbit.io/v2.0/forecast/daily?city=${citySearch}&key=${process.env.WEATHER_API_KEY}`;
+      const res = await axios.get(API);
+      if (res.data) {
+        const forecast = res.data.data.map((dayForecast) => {
+          return {
+            date: dayForecast.datetime,
+            description: dayForecast.weather.description,
+          };
+        });
 
-    dataCitySearch.lon = dataCitySearch.lon.toString().split(".")[0];
-    dataCitySearch.lat = dataCitySearch.lat.toString().split(".")[0];
-
-    if (dataCitySearch.lon == lonSearch && dataCitySearch.lat == latSearch) {
-      let forecast = dataCitySearch.data.map((data) => {
-        let forecastTemp = {
-          date: data.datetime,
-          description: data.weather.description,
-        };
-        return forecastTemp;
-      });
-      response.send(forecast);
-    } else {
-      response.send("No data for your search. Make sure to enter the correct lat, lon, city name");
-      response.status(500);
+        response.json(forecast);
+      } else {
+        response.status(500).json(error);
+      }
+    } catch (error) {
+      response.status(500).json("error api weather");
     }
   } else {
-    response.send(error);
-    response.status(500);
+    response.json("Arguments are wrong make sure to enter a lat, lon, searchQuery");
+  }
+
+  // local data
+  //
+  //
+  // if (request.query.lat && request.query.lon && request.query.searchQuery) {
+  //   let latSearch = request.query.lat.split(".")[0];
+  //   let lonSearch = request.query.lon.split(".")[0];
+  //   let citySearch = request.query.searchQuery;
+  //   let dataCitySearch = data.find((city) => city.city_name.toLowerCase() === citySearch.toLowerCase());
+  //   if (dataCitySearch) {
+  //     dataCitySearch.lon = dataCitySearch.lon.toString().split(".")[0];
+  //     dataCitySearch.lat = dataCitySearch.lat.toString().split(".")[0];
+  //     if (dataCitySearch.lon == lonSearch && dataCitySearch.lat == latSearch) {
+  //       let forecast = dataCitySearch.data.map((data) => {
+  //         let forecastTemp = {
+  //           date: data.datetime,
+  //           description: data.weather.description,
+  //         };
+  //         return forecastTemp;
+  //       });
+  //       response.json(forecast);
+  //     } else {
+  //       response.status(500).send("No data for your search. Make sure to enter the correct lat, lon, city name");
+  //     }
+  //   } else {
+  //     response.status(500).json(error);
+  //   }
+  // }
+});
+
+app.get("/movies", async (request, response) => {
+  let citySearch = request.query.searchQuery;
+  try {
+    const API = `https://api.themoviedb.org/3/search/movie?api_key=${process.env.MOVIE_API_KEY}&query=${citySearch}&include_adult=false&language=en-US&page=1`;
+    const res = await axios.get(API);
+    let movies = res.data.results.map((movie) => {
+      return {
+        title: movie.title,
+        overview: movie.overview,
+        average_votes: movie.vote_average,
+        total_votes: movie.vote_count,
+        image_url: movie.poster_path,
+        popularity: movie.popularity,
+        released_on: movie.release_date,
+      };
+    });
+
+    response.json(movies);
+  } catch (error) {
+    response.status(500).json("error api movies");
   }
 });
 
