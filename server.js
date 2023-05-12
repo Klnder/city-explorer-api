@@ -46,6 +46,9 @@ app.get("/weather", async (request, response) => {
           return {
             date: dayForecast.date,
             description: dayForecast.day.condition.text,
+            icon: dayForecast.day.condition.icon,
+            mintemp: dayForecast.day.mintemp_c,
+            maxtemp: dayForecast.day.maxtemp_c,
           };
         });
         response.json(forecast);
@@ -58,34 +61,6 @@ app.get("/weather", async (request, response) => {
   } else {
     response.json("Arguments are wrong make sure to enter a lat, lon, searchQuery");
   }
-
-  // local data
-  //
-  //
-  // if (request.query.lat && request.query.lon && request.query.searchQuery) {
-  //   let latSearch = request.query.lat.split(".")[0];
-  //   let lonSearch = request.query.lon.split(".")[0];
-  //   let citySearch = request.query.searchQuery;
-  //   let dataCitySearch = data.find((city) => city.city_name.toLowerCase() === citySearch.toLowerCase());
-  //   if (dataCitySearch) {
-  //     dataCitySearch.lon = dataCitySearch.lon.toString().split(".")[0];
-  //     dataCitySearch.lat = dataCitySearch.lat.toString().split(".")[0];
-  //     if (dataCitySearch.lon == lonSearch && dataCitySearch.lat == latSearch) {
-  //       let forecast = dataCitySearch.data.map((data) => {
-  //         let forecastTemp = {
-  //           date: data.datetime,
-  //           description: data.weather.description,
-  //         };
-  //         return forecastTemp;
-  //       });
-  //       response.json(forecast);
-  //     } else {
-  //       response.status(500).send("No data for your search. Make sure to enter the correct lat, lon, city name");
-  //     }
-  //   } else {
-  //     response.status(500).json(error);
-  //   }
-  // }
 });
 
 app.get("/movies", async (request, response) => {
