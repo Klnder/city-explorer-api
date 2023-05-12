@@ -3,9 +3,14 @@ const axios = require("axios");
 
 async function movie(request, response) {
   let citySearch = request.query.searchQuery;
-
   try {
-    const API = `https://api.themoviedb.org/3/search/movie?api_key=${process.env.MOVIE_API_KEY}&query=${citySearch}&include_adult=false&language=en-US&page=1`;
+    const APIKeyword = `https://api.themoviedb.org/3/search/keyword?api_key=${process.env.MOVIE_API_KEY}&query=${citySearch}&page=1`;
+
+    const resKeyword = await axios.get(APIKeyword);
+    let idSearch = resKeyword.data.results[0].id;
+
+    const API = `https://api.themoviedb.org/3/discover/movie?api_key=${process.env.MOVIE_API_KEY}&with_keywords=${idSearch}&include_adult=false&include_video=false&page=1&sort_by=popularity.desc`;
+
     const res = await axios.get(API);
 
     let movies = res.data.results.map((movie) => {
