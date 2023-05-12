@@ -39,16 +39,15 @@ app.get("/weather", async (request, response) => {
     let citySearch = request.query.searchQuery;
 
     try {
-      const API = `https://api.weatherbit.io/v2.0/forecast/daily?city=${citySearch}&key=${process.env.WEATHER_API_KEY}`;
+      const API = `https://api.weatherapi.com/v1/forecast.json?key=${process.env.NEW_WEATHER_API_KEY}&q=${citySearch}&days=7&aqi=no&alerts=no`;
       const res = await axios.get(API);
       if (res.data) {
-        const forecast = res.data.data.map((dayForecast) => {
+        const forecast = res.data.forecast.forecastday.map((dayForecast) => {
           return {
-            date: dayForecast.datetime,
-            description: dayForecast.weather.description,
+            date: dayForecast.date,
+            description: dayForecast.day.condition.text,
           };
         });
-
         response.json(forecast);
       } else {
         response.status(500).json(error);
