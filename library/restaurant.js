@@ -31,7 +31,7 @@ async function restaurant(request, response) {
         response.status(500).json("error retrieving data");
       }
     } catch (error) {
-      response.json("error api restaurant");
+      response.status(500).json("error api restaurant");
     }
   } else {
     response.json("Arguments are wrong: need to have a searchQuery");

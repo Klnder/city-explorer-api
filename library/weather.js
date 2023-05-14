@@ -26,7 +26,7 @@ async function weather(request, response) {
       response.status(500).json("error api weather");
     }
   } else {
-    response.json("Arguments are wrong: need to have a searchQuery");
+    response.status(500).json("Arguments are wrong: need to have a searchQuery");
   }
 }
 
