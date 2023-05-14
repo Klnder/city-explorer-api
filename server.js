@@ -27,6 +27,7 @@ const error = {
 };
 const movie = require("./library/movie");
 const weather = require("./library/weather");
+const restaurant = require("./library/restaurant");
 
 // this is a route. if you turn the server on and go to http://localhost:3001/ (or whatever port you specified in your .env), you will see 'hello from the home route'
 app.get("/", (request, response) => {
@@ -34,6 +35,7 @@ app.get("/", (request, response) => {
 });
 app.get("/weather", weather);
 app.get("/movies", movie);
+app.get("/restaurants", restaurant);
 
 // this turns the server on to the port that you specifed in your .env file
 app.listen(PORT, () => console.log(`listening on ${PORT}`));

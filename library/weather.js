@@ -2,7 +2,7 @@ require("dotenv").config();
 const axios = require("axios");
 
 async function weather(request, response) {
-  if (request.query.lat && request.query.lon && request.query.searchQuery) {
+  if (request.query.searchQuery) {
     let citySearch = request.query.searchQuery;
 
     try {
