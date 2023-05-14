@@ -20,13 +20,13 @@ async function weather(request, response) {
         });
         response.json(forecast);
       } else {
-        response.status(500).json(error);
+        response.status(500).json("error retrieving data");
       }
     } catch (error) {
       response.status(500).json("error api weather");
     }
   } else {
-    response.json("Arguments are wrong make sure to enter a lat, lon, searchQuery");
+    response.json("Arguments are wrong: need to have a searchQuery");
   }
 }
 
