@@ -16,6 +16,7 @@ async function movie(request, response) {
       if (res.data) {
         let movies = res.data.results.map((movie) => {
           return {
+            id: movie.id,
             title: movie.title,
             overview: movie.overview,
             average_votes: movie.vote_average,
@@ -27,7 +28,7 @@ async function movie(request, response) {
         });
         response.json(movies);
       } else {
-        response.status(500).json("error retrieving data")
+        response.status(500).json("error retrieving data");
       }
     } catch (error) {
       response.status(500).json("error api movies");
