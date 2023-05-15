@@ -11,7 +11,7 @@ async function restaurant(request, response) {
     });
 
     try {
-      const API = `https://api.yelp.com/v3/businesses/search?location=${citySearch}&limit=20&term=restaurant&price=1&price=2&price=3&sort_by=rating`;
+      const API = `https://api.yelp.com/v3/businesses/search?location=${citySearch}&limit=20&sort_by=review_count&radius=1610&term=restaurants`;
       const res = await reqInstance.get(API);
 
       if (res.data) {
